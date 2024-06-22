@@ -34,8 +34,13 @@ jobs:
         if: matrix.platform == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y android-sdk cmdline-tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+          sudo mkdir -p /usr/lib/android-sdk/cmdline-tools
+          sudo unzip commandlinetools-linux-6609375_latest.zip -d /usr/lib/android-sdk/cmdline-tools
           echo "ANDROID_HOME=/usr/lib/android-sdk" >> $GITHUB_ENV
+          echo "PATH=$PATH:/usr/lib/android-sdk/cmdline-tools/tools/bin" >> $GITHUB_ENV
+          yes | sudo /usr/lib/android-sdk/cmdline-tools/tools/bin/sdkmanager --licenses
+          sudo /usr/lib/android-sdk/cmdline-tools/tools/bin/sdkmanager "build-tools;29.0.2" "platforms;android-29"
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
