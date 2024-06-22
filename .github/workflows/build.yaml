@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-20.04, windows-latest]
+        platform: [macos-latest, windows-latest, ubuntu-latest]
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -22,18 +22,26 @@ jobs:
           node-version: 20
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
-      - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-20.04'
+      - name: install frontend dependencies
+        run: yarn install
+      - name: Setup JDK 11
+        if: matrix.platform == 'ubuntu-latest'
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Install Android Command Line Tools
+        if: matrix.platform == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf libgtk2.0-dev libgtk-3-dev libglib2.0-dev
-      - name: install frontend dependencies
-        run: yarn install # change this to npm or pnpm depending on which one you use
+          sudo apt-get install -y android-sdk cmdline-tools
+          echo "ANDROID_HOME=/usr/lib/android-sdk" >> $GITHUB_ENV
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
+          args: build --target all
+          tagName: app-v__VERSION__
           releaseName: 'App v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true

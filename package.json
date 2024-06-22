@@ -9,9 +9,8 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "start": "tauri dev",
-    "tauri:init": "tauri android init && tauri ios init",
-    "start:android": "tauri android dev",
-    "start:ios": "tauri ios dev"
+    "tauri:init": "tauri android init",
+    "start:android": "tauri android dev"
   },
   "dependencies": {
     "react": "^18.2.0",
