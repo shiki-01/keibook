@@ -34,7 +34,7 @@ jobs:
         if: matrix.platform == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libsoup3.0-dev
+          sudo apt-get install -y libsoup3-dev  # Updated package name
           export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig
           wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
           sudo mkdir -p /usr/lib/android-sdk/cmdline-tools
@@ -43,7 +43,6 @@ jobs:
           echo "PATH=$PATH:/usr/lib/android-sdk/cmdline-tools/tools/bin" >> $GITHUB_ENV
           yes | sudo /usr/lib/android-sdk/cmdline-tools/tools/bin/sdkmanager --licenses
           sudo /usr/lib/android-sdk/cmdline-tools/tools/bin/sdkmanager "build-tools;29.0.2" "platforms;android-29"
-      - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
